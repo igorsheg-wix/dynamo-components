@@ -8,11 +8,9 @@ const data = [
   { label: "Test Coupons", url: "" },
 ];
 
-
-export const Default = () => <BreadCrumbs data={JSON.stringify(data)} />
-
+export const Default = () => <BreadCrumbs data={JSON.stringify(data)} />;
 
 export default {
-  title: 'BreadCrumbs',
+  title: "BreadCrumbs",
   component: BreadCrumbs,
 };

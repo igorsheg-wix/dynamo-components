@@ -1,37 +1,43 @@
 // @ts-nocheck
 
-import { h } from 'preact';
-import { useEffect, useState } from 'preact/hooks';
-import styled from "styled-components"
-import register from 'preact-custom-element';
-import { FC } from 'preact/compat/src';
-import useClickOutside from '../../utils/useClickOutside';
-import useCustomEvent from '../../utils/useCustomEvent';
-import App from '../../App';
-
+import { h } from "preact";
+import register from "preact-custom-element";
+import { FC } from "preact/compat/src";
+import { useEffect, useState } from "preact/hooks";
+import styled from "styled-components";
+import App from "../../App";
+import useClickOutside from "../../utils/useClickOutside";
+import useCustomEvent from "../../utils/useCustomEvent";
 
 const DURATION = 120;
 
-
-const ActionList: FC<{data: any}> = ({ data, clickHabdler }) => (
+const ActionList: FC<{ data: any }> = ({ data, clickHabdler }) => (
   <StyledList>
     {data.map((item) => (
-      <button onClick={() => clickHabdler(item)} disabled={item.disabled} type="button" key={item.label}>
+      <button
+        onClick={() => clickHabdler(item)}
+        disabled={item.disabled}
+        type="button"
+        key={item.label}
+      >
         {item.icon && <img alt="" src={item.icon} />}
         {item.label}
       </button>
-      ))}
+    ))}
   </StyledList>
-  )
+);
 
 const Popover: FC<{ showtooltip: string }> = ({ init }) => {
-  const [coords, setCoords] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
+  const [coords, setCoords] = useState<{ x: number; y: number }>({
+    x: 0,
+    y: 0,
+  });
   const [isVisible, setIsVisible] = useState(false);
-  const [propData, setData] = useState<string | null>(null)
-  const [targetState, setTargetState] = useState(null)
+  const [propData, setData] = useState<string | null>(null);
+  const [targetState, setTargetState] = useState(null);
 
-  const [compRef, isClickOutside]: (PropRef<HTMLElement> | boolean)[] = useClickOutside();
-
+  const [compRef, isClickOutside]: (PropRef<HTMLElement> | boolean)[] =
+    useClickOutside();
 
   const showTooltip = (ev) => {
     if (compRef && compRef.current) {
@@ -40,35 +46,35 @@ const Popover: FC<{ showtooltip: string }> = ({ init }) => {
 
       const deltaCenter = (targetCoords.width - compCoords.width) / 2;
       const deltaX = targetCoords.left - compCoords.left + deltaCenter;
-      const deltaY = targetCoords.top - compCoords.top + targetCoords.height + 18;
+      const deltaY =
+        targetCoords.top - compCoords.top + targetCoords.height + 18;
 
       setCoords({ x: deltaX, y: deltaY });
       setIsVisible(true);
     }
-  }
+  };
 
   const hideTooltip = () => {
     setIsVisible(false);
-      setCoords({ x: 0, y: 0 });
-      setTargetState(null)
-  }
-
+    setCoords({ x: 0, y: 0 });
+    setTargetState(null);
+  };
 
   const dispatchEvent = useCustomEvent({
     ref: compRef,
-    eventName: 'itemClicked',
+    eventName: "itemClicked",
   });
 
   const clickHabdler = (item) => {
-    dispatchEvent(item)
-  }
+    dispatchEvent(item);
+  };
 
   useEffect(() => {
     if (init) {
       const parsedData = JSON.parse(init);
-      const { data, target }: { data: any, target: any } = parsedData;
-      setData(data)
-      setTargetState(target)
+      const { data, target }: { data: any; target: any } = parsedData;
+      setData(data);
+      setTargetState(target);
     }
   }, [init]);
 
@@ -77,29 +83,32 @@ const Popover: FC<{ showtooltip: string }> = ({ init }) => {
   useEffect(() => {
     if (targetState) {
       const targetEl = document.getElementById(targetState.syntheticEvent.id);
-      showTooltip(targetEl)
+      showTooltip(targetEl);
     }
   }, [targetState, propData]);
 
-
   return (
     <App>
-      {!targetState || !coords ? null
-        : (
-          <Tip
-            isVisible={isVisible}
-            duration={DURATION}
-            ref={compRef}
-            x={coords.x}
-            y={coords.y}
-          >
-            <ActionList clickHabdler={clickHabdler} data={propData} />
-          </Tip>
-        )}
+      {!targetState || !coords ? null : (
+        <Tip
+          isVisible={isVisible}
+          duration={DURATION}
+          ref={compRef}
+          x={coords.x}
+          y={coords.y}
+        >
+          <ActionList clickHabdler={clickHabdler} data={propData} />
+        </Tip>
+      )}
     </App>
-  )
+  );
 };
-const Tip: any = styled.div<{x: number;y: number;isVisible: boolean;duration: number;}>`
+const Tip: any = styled.div<{
+  x: number;
+  y: number;
+  isVisible: boolean;
+  duration: number;
+}>`
   box-sizing: border-box;
   position: absolute;
   background: ${(props) => props.theme.colors.$D80};
@@ -116,7 +125,8 @@ const Tip: any = styled.div<{x: number;y: number;isVisible: boolean;duration: nu
   max-width: 360px;
   min-width: 144px;
   opacity: ${(props) => (props.isVisible ? "1" : "0")};
-  transform: ${(props) => (props.isVisible ? "translateY(0px)" : "translateY(10px)")};
+  transform: ${(props) =>
+    props.isVisible ? "translateY(0px)" : "translateY(10px)"};
   transition: opacity,
     transform ${(props) => props.duration}ms cubic-bezier(0.23, 1, 0.32, 1);
 
@@ -181,7 +191,6 @@ const StyledList: any = styled.ul`
   }
 `;
 
-export default { title: 'Popover' }
+export default { title: "Popover" };
 
-
-register(Popover, 'x-popover', ['init']);
+register(Popover, "x-popover", ["init"]);

@@ -1,11 +1,11 @@
-import { h } from "preact"
-import styled from "styled-components";
+import { h } from "preact";
+import register from "preact-custom-element";
 import { useEffect, useState } from "preact/hooks";
-import register from 'preact-custom-element';
+import styled from "styled-components";
 
-
- const Skeleton = ({ width, height }: {width?: number, height?: number }) => {
-  const randomInteger = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+const Skeleton = ({ width, height }: { width?: number; height?: number }) => {
+  const randomInteger = (min, max) =>
+    Math.floor(Math.random() * (max - min + 1) + min);
   const maxWidth = width || 150;
   const [currentWidth, setWidth] = useState(0);
 
@@ -14,24 +14,19 @@ import register from 'preact-custom-element';
     return () => width;
   }, []);
 
-
-  return (
-    <Rectangle height={height} width={currentWidth} />
-  );
+  return <Rectangle height={height} width={currentWidth} />;
 };
 
+const Rectangle: any = styled.span<{ width: number; height: number }>`
+  @keyframes pulsate {
+    from {
+      background-position: 200% 50%;
+    }
 
-const Rectangle: any = styled.span<{ width: number, height: number }>`
-
-@keyframes pulsate {
-  from {
-   background-position:200% 50%;
+    to {
+      background-position: -200% 50%;
+    }
   }
-
-  to {
-    background-position:-200% 50%;
-  }
-}
 
   width: 100px;
   background: linear-gradient(
@@ -63,4 +58,4 @@ const Rectangle: any = styled.span<{ width: number, height: number }>`
   }
 `;
 export default Skeleton;
-register(Skeleton, 'x-skeleton');
+register(Skeleton, "x-skeleton");

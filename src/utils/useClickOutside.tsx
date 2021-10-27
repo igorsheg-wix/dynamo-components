@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'preact/hooks';
+import { useEffect, useRef, useState } from "preact/hooks";
 
 const useClickOutside = () => {
   const [state, setState] = useState<boolean>(false);
@@ -12,11 +12,10 @@ const useClickOutside = () => {
     }
   };
 
-
   useEffect(() => {
-    document.addEventListener('mousedown', clickHandler);
+    document.addEventListener("mousedown", clickHandler);
     return () => {
-      document.removeEventListener('mousedown', clickHandler);
+      document.removeEventListener("mousedown", clickHandler);
     };
   }, []);
 

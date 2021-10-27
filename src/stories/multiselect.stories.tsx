@@ -2,7 +2,6 @@
 import { h } from "preact";
 import MultiSelect from "../components/MultiSelect";
 
-
 const data = [
   {
     id: "ef4c058e-bab1-481b-9131-b56a92fc0401",
@@ -61,9 +60,9 @@ const data = [
   },
 ];
 
-export const Default = () => <MultiSelect data={JSON.stringify(data)} />
+export const Default = () => <MultiSelect data={JSON.stringify(data)} />;
 
 export default {
-  title: 'Dropdown',
+  title: "Dropdown",
   component: MultiSelect,
 };

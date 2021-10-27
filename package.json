@@ -6,7 +6,7 @@
   "main": "src",
   "scripts": {
     "start": "webpack-dev-server --mode development --open",
-    "now-build": "webpack --mode production && npm run now-build-storybook",
+    "now-build": "webpack --mode production",
     "now-build-storybook": "build-storybook -c .storybook -o dist/storybook",
     "storybook": " start-storybook"
   },
@@ -43,6 +43,7 @@
     "@babel/plugin-proposal-class-properties": "^7.8.0",
     "@babel/plugin-transform-react-constant-elements": "^7.8.3",
     "@babel/plugin-transform-react-jsx": "^7.8.0",
+    "@babel/plugin-transform-react-jsx-source": "^7.14.5",
     "@babel/plugin-transform-runtime": "^7.8.3",
     "@babel/preset-env": "^7.8.0",
     "@babel/preset-react": "^7.8.3",
@@ -70,7 +71,7 @@
     "clean-terminal-webpack-plugin": "^2.0.5",
     "corvid-types": "^0.1.90",
     "css-loader": "^3.4.2",
-    "eslint": "^6.8.0",
+    "eslint": "^7.20.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-config-airbnb-typescript": "^6.3.1",
     "eslint-config-prettier": "^6.9.0",

@@ -1,18 +1,12 @@
 import { h } from "preact";
-import styled, { ThemeProvider } from 'styled-components';
-import { FC } from "preact/compat";
+import styled, { ThemeProvider } from "styled-components";
 import theme from "./utils/globalStyles";
 
-
 const App: any = ({ children }) => (
-
   <StyledBase>
     <ThemeProvider theme={theme}>{children}</ThemeProvider>
-
   </StyledBase>
-
-  )
-
+);
 
 const StyledBase: any = styled.div`
   -webkit-font-smoothing: antialiased;

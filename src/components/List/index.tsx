@@ -1,71 +1,75 @@
 // @ts-nocheck
 
 import { h } from 'preact';
-import { useEffect, useState } from 'preact/hooks';
-import styled from "styled-components"
 import register from 'preact-custom-element';
+import { useEffect, useState } from 'preact/hooks';
+import styled from 'styled-components';
 import App from '../../App';
 import Skeleton from '../Skeleton';
 
-
 type Item = {
-  key: string
-  value: any
+  key: string;
+  value: any;
 };
-
 
 const SkeletonData = () => (
   <StyledList>
     <Keys>
-      <li><Skeleton height={16} /></li>
-      <li><Skeleton height={16} /></li>
-      <li><Skeleton height={16} /></li>
+      <li>
+        <Skeleton height={16} />
+      </li>
+      <li>
+        <Skeleton height={16} />
+      </li>
+      <li>
+        <Skeleton height={16} />
+      </li>
     </Keys>
     <Values>
-      <li><Skeleton height={16} /></li>
-      <li><Skeleton height={16} /></li>
-      <li><Skeleton height={16} /></li>
+      <li>
+        <Skeleton height={16} />
+      </li>
+      <li>
+        <Skeleton height={16} />
+      </li>
+      <li>
+        <Skeleton height={16} />
+      </li>
     </Values>
   </StyledList>
-  );
+);
 
 const ListedData = ({ data }) => (
   <StyledList>
     <Keys>
-      {data.map((item) => (
+      {data.map(item => (
         <li key={item.key}>{item.key}</li>
       ))}
     </Keys>
     <Values>
-      {data.map((item) => (
+      {data.map(item => (
         // @ts-ignore
         <li innerHTML={item.value} key={item.value} />
-
-    ))}
+      ))}
     </Values>
   </StyledList>
-  );
+);
 
 const List = ({ data }) => {
   const [parsedData, setData] = useState<Item[] | null>(null);
 
-
   useEffect(() => {
-   if (data) {
-     setData(JSON.parse(data))
-   }
+    if (data) {
+      setData(JSON.parse(data));
+    }
   }, [data]);
-
 
   return (
     <App>
-      {parsedData
-        ? <ListedData data={parsedData} />
-        : <SkeletonData /> }
+      {parsedData ? <ListedData data={parsedData} /> : <SkeletonData />}
     </App>
-  )
+  );
 };
-
 
 const StyledList = styled.div`
   padding: 0;
@@ -76,25 +80,21 @@ const StyledList = styled.div`
   font-size: 14px;
 
   div li {
-  height: 36px;
-  display: flex;
-  align-items: center;
+    height: 36px;
+    display: flex;
+    align-items: center;
   }
-
 `;
 
 const Keys = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0 30px 0 0;
-
-  
 `;
 
 const Values = styled.div`
   display: flex;
   flex-direction: column;
-
 `;
 
 export default List;

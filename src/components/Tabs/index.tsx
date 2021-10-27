@@ -1,33 +1,27 @@
-
-import { h } from 'preact';
-import { useEffect, useState, useRef } from 'preact/hooks';
-import styled from "styled-components"
-import register from 'preact-custom-element';
-import { FC } from 'preact/compat';
-import App from '../../App';
-import useCustomEvent from '../../utils/useCustomEvent';
-
+import { h } from "preact";
+import register from "preact-custom-element";
+import { FC } from "preact/compat";
+import { useEffect, useRef, useState } from "preact/hooks";
+import styled from "styled-components";
+import App from "../../App";
+import useCustomEvent from "../../utils/useCustomEvent";
 
 type Tab = {
-  label: string,
-  id?: string
+  label: string;
+  id?: string;
 };
 interface Props {
-  data: string,
-  activetab?: String
+  data: string;
+  activetab?: String;
 }
 
 const Tab = ({ item, isActive, clickHandler }) => (
   <StyledLi isActive={isActive}>
-    <button
-      onClick={() => clickHandler(item)}
-      type="button"
-    >
+    <button onClick={() => clickHandler(item)} type="button">
       {item.label}
     </button>
   </StyledLi>
 );
-
 
 const Tabs: FC<Props> = ({ data, activetab }) => {
   const [dataState, setData] = useState<Tab[] | null>(null);
@@ -43,26 +37,27 @@ const Tabs: FC<Props> = ({ data, activetab }) => {
 
   useEffect(() => {
     if (activetab && dataState) {
-      setActive(dataState.filter((tab) => tab.id.toLowerCase() === activetab.toLowerCase())
-        .reduce((acc, item) => {
-          // @ts-ignore
-          const flatten = acc.concat(item);
-          return flatten;
-        }));
+      setActive(
+        dataState
+          .filter((tab) => tab.id.toLowerCase() === activetab.toLowerCase())
+          .reduce((acc, item) => {
+            // @ts-ignore
+            const flatten = acc.concat(item);
+            return flatten;
+          })
+      );
     }
   }, [activetab, dataState]);
 
-
   const dispatchEvent = useCustomEvent({
     ref: componentRef,
-    eventName: 'tabItemClicked',
+    eventName: "tabItemClicked",
   });
 
   const clickHandler = (item) => {
-    dispatchEvent(item)
+    dispatchEvent(item);
     setActive(item);
   };
-
 
   if (!dataState) return null;
   return (
@@ -76,7 +71,7 @@ const Tabs: FC<Props> = ({ data, activetab }) => {
               clickHandler={clickHandler}
               isActive={active.id === tab.id}
             />
-        ))}
+          ))}
         </ul>
       </Wrap>
     </App>
@@ -84,23 +79,20 @@ const Tabs: FC<Props> = ({ data, activetab }) => {
 };
 
 const Wrap: any = styled.div`
-
-.styledUl {
-  list-style: none;
-  display: flex;
-  flex-direction: row;
-  padding: 0;
-  margin: 0;
-  height: 60px;
-  position: relative;
-  font-family: $FontRoman;
-  box-sizing: border-box;
-}
+  .styledUl {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+    margin: 0;
+    height: 60px;
+    position: relative;
+    font-family: $FontRoman;
+    box-sizing: border-box;
+  }
 `;
 
-
-const StyledLi: any = styled.li<{isActive: boolean}>`
-
+const StyledLi: any = styled.li<{ isActive: boolean }>`
   height: 100%;
   display: flex;
   justify-content: center;
@@ -116,10 +108,12 @@ const StyledLi: any = styled.li<{isActive: boolean}>`
     font-size: 14px;
     padding: 0;
     color: $B10;
-    color: ${(props) => (props.isActive ? props.theme.colors.$B10 : props.theme.colors.$D10)};
-    box-shadow: ${(props) => (props.isActive
+    color: ${(props) =>
+      props.isActive ? props.theme.colors.$B10 : props.theme.colors.$D10};
+    box-shadow: ${(props) =>
+      props.isActive
         ? `inset 0 -2px 0 0 ${props.theme.colors.$B10}`
-        : "inset 0 0px 0 0 blue")};
+        : "inset 0 0px 0 0 blue"};
     &:hover {
       color: ${(props) => props.theme.colors.$B10};
       cursor: pointer;
@@ -127,5 +121,5 @@ const StyledLi: any = styled.li<{isActive: boolean}>`
   }
 `;
 
-register(Tabs, 'x-tabs', ['data', 'activetab']);
+register(Tabs, "x-tabs", ["data", "activetab"]);
 export default Tabs;

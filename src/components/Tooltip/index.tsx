@@ -1,19 +1,23 @@
 // @ts-nocheck
 
-import { h, FunctionComponent } from 'preact';
-import { useEffect, useState, useRef } from 'preact/hooks';
-import styled from "styled-components"
-import register from 'preact-custom-element';
-import App from '../../App';
-
+import { FunctionComponent, h } from "preact";
+import register from "preact-custom-element";
+import { useEffect, useRef, useState } from "preact/hooks";
+import styled from "styled-components";
+import App from "../../App";
 
 const DURATION = 120;
 
-const Tooltip: FunctionComponent<{ showtooltip: string }> = ({ showtooltip }) => {
-  const [coords, setCoords] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
+const Tooltip: FunctionComponent<{ showtooltip: string }> = ({
+  showtooltip,
+}) => {
+  const [coords, setCoords] = useState<{ x: number; y: number }>({
+    x: 0,
+    y: 0,
+  });
   const [isVisible, setIsVisible] = useState(false);
-  const [messageState, setMessage] = useState<string | null>(null)
-  const [targetState, setTargetState] = useState(null)
+  const [messageState, setMessage] = useState<string | null>(null);
+  const [targetState, setTargetState] = useState(null);
 
   const compRef = useRef<HTMLDivElement>();
 
@@ -29,52 +33,53 @@ const Tooltip: FunctionComponent<{ showtooltip: string }> = ({ showtooltip }) =>
       setCoords({ x: deltaX, y: deltaY });
       setIsVisible(true);
     }
-  }
+  };
 
   const hideTooltip = () => {
     setIsVisible(false);
-      setCoords({ x: 0, y: 0 });
-      setTargetState(null)
-  }
-
+    setCoords({ x: 0, y: 0 });
+    setTargetState(null);
+  };
 
   useEffect(() => {
     if (showtooltip) {
       const parsedData = JSON.parse(showtooltip);
-      const { message, target }: { message: string, target: any } = parsedData;
-      setMessage(message)
-      setTargetState(target)
+      const { message, target }: { message: string; target: any } = parsedData;
+      setMessage(message);
+      setTargetState(target);
     }
   }, [showtooltip]);
-
 
   useEffect(() => {
     if (targetState) {
       const targetEl = document.getElementById(targetState.syntheticEvent.id);
-      showTooltip(targetEl)
-      targetEl.addEventListener('mouseleave', hideTooltip);
+      showTooltip(targetEl);
+      targetEl.addEventListener("mouseleave", hideTooltip);
     }
   }, [targetState, messageState]);
 
-
   return (
     <App>
-      {!targetState || !coords ? null
-        : (
-          <Tip
-            isVisible={isVisible}
-            duration={DURATION}
-            ref={compRef}
-            x={coords.x}
-            y={coords.y}
-          >
-            <span>{messageState}</span>
-          </Tip>
-        )}
+      {!targetState || !coords ? null : (
+        <Tip
+          isVisible={isVisible}
+          duration={DURATION}
+          ref={compRef}
+          x={coords.x}
+          y={coords.y}
+        >
+          <span>{messageState}</span>
+        </Tip>
+      )}
     </App>
-  )
+  );
 };
-const Tip: any = styled.div<{ x: number, y: number, isVisible: boolean, duration: number }>`
+const Tip: any = styled.div<{
+  x: number;
+  y: number;
+  isVisible: boolean;
+  duration: number;
+}>`
   position: absolute;
   background: ${(props) => props.theme.colors.$D10};
   color: ${(props) => props.theme.colors.$D80};
@@ -88,8 +93,10 @@ const Tip: any = styled.div<{ x: number, y: number, isVisible: boolean, duration
   text-align: center;
   max-width: 144px;
   opacity: ${(props) => (props.isVisible ? "1" : "0")};
-  transform: ${(props) => (props.isVisible ? "translateY(0px)" : "translateY(10px)")};
-  transition: opacity, transform ${(props) => props.duration}ms cubic-bezier(0.23, 1, 0.32, 1);
+  transform: ${(props) =>
+    props.isVisible ? "translateY(0px)" : "translateY(10px)"};
+  transition: opacity,
+    transform ${(props) => props.duration}ms cubic-bezier(0.23, 1, 0.32, 1);
 
   &:before {
     top: 100%;
@@ -107,7 +114,6 @@ const Tip: any = styled.div<{ x: number, y: number, isVisible: boolean, duration
   }
 `;
 
-export default { title: 'Tooltip' }
+export default { title: "Tooltip" };
 
-
-register(Tooltip, 'x-tooltip', ['showtooltip']);
+register(Tooltip, "x-tooltip", ["showtooltip"]);

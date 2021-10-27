@@ -1,57 +1,55 @@
 /* eslint-disable no-console */
 // @ts-nocheck
 
-import { h, FunctionComponent } from 'preact';
-import { useEffect, useState, useRef } from 'preact/hooks';
-import register from 'preact-custom-element';
-import styled from "styled-components"
-import { FC } from 'preact/compat/src';
-import LogoIcon from './LogoIcon';
-import useCustomEvent from '../../utils/useCustomEvent';
+import { FunctionComponent, h } from "preact";
+import register from "preact-custom-element";
+import { FC } from "preact/compat/src";
+import { useEffect, useRef, useState } from "preact/hooks";
+import styled from "styled-components";
 import App from "../../App";
+import useCustomEvent from "../../utils/useCustomEvent";
+import LogoIcon from "./LogoIcon";
 
 type MenuItem = {
-  id?: string,
-  label: string
+  id?: string;
+  label: string;
 };
 type Section = {
-  label?: string,
-  items: MenuItem[]
+  label?: string;
+  items: MenuItem[];
 };
 interface Props {
-  data: string
-  activemenuitem?: string,
+  data: string;
+  activemenuitem?: string;
 }
 
-
 const Logo = () => (
-  <div className="logo"><LogoIcon /></div>
+  <div className="logo">
+    <LogoIcon />
+  </div>
 );
 
-const Section: FC<{ section: Section, isActive: MenuItem, clickHandler: any}> = (
-  { section, isActive, clickHandler },
-) => (
-  <StyledSection>
-    {section.label && <h5>{section.label}</h5>}
-    <ul>
-      {section.items.map((item, index) => (
-        <li
-          key={item.label}
-        >
-          <MenuItem
-            tabIndex={-index}
-            isActive={isActive && isActive.label === item.label}
-            type="button"
-            onClick={() => clickHandler(item)}
-            onKeyPress={() => clickHandler(item)}
-          >
-            {item.label}
-          </MenuItem>
-        </li>
-      ))}
-    </ul>
-  </StyledSection>
-);
+const Section: FC<{ section: Section; isActive: MenuItem; clickHandler: any }> =
+  ({ section, isActive, clickHandler }) => (
+    <StyledSection>
+      {section.label && <h5>{section.label}</h5>}
+      <ul>
+        {section.items.map((item, index) => (
+          <li key={item.label}>
+            <MenuItem
+              tabIndex={-index}
+              isActive={isActive && isActive.label === item.label}
+              type="button"
+              onClick={() => clickHandler(item)}
+              onKeyPress={() => clickHandler(item)}
+            >
+              {item.label}
+            </MenuItem>
+          </li>
+        ))}
+      </ul>
+    </StyledSection>
+  );
 
 const Sidebar: FunctionComponent<Props> = ({ data, activemenuitem }) => {
   const [dataState, setData] = useState<Section[]>([]);
@@ -61,13 +59,13 @@ const Sidebar: FunctionComponent<Props> = ({ data, activemenuitem }) => {
 
   const dispatchEvent = useCustomEvent({
     ref: componentRef,
-    eventName: 'menuItemClicked',
-});
+    eventName: "menuItemClicked",
+  });
 
   const clickHandler = (item) => {
     setActive(item);
     dispatchEvent(item);
-  }
+  };
 
   useEffect(() => {
     if (data) {
@@ -76,8 +74,9 @@ const Sidebar: FunctionComponent<Props> = ({ data, activemenuitem }) => {
 
       if (activemenuitem) {
         parsedData.map((section) => {
-          const filter = section.items
-          .filter((item) => item.label.toLowerCase() === activemenuitem.toLowerCase());
+          const filter = section.items.filter(
+            (item) => item.label.toLowerCase() === activemenuitem.toLowerCase()
+          );
 
           if (!filter.length) return;
           // @ts-ignore
@@ -86,7 +85,6 @@ const Sidebar: FunctionComponent<Props> = ({ data, activemenuitem }) => {
       }
     }
   }, [data, activemenuitem]);
-
 
   if (!dataState) return null;
   return (
@@ -106,13 +104,12 @@ const Sidebar: FunctionComponent<Props> = ({ data, activemenuitem }) => {
   );
 };
 
-
 const StyledBar: any = styled.div`
   height: 100vh;
   width: 220px;
   background: ${(props) => props.theme.sidebar.colors.$bg};
   color: ${(props) => props.theme.colors.$D80};
-  
+
   .logo {
     padding: 0 24px;
     height: 108px;
@@ -131,7 +128,8 @@ const StyledSection: any = styled.div<{ isActive: Boolean }>`
     height: 36px;
     position: relative;
     display: block;
-    box-shadow: inset 0 -17px 0 0 ${(props) => props.theme.sidebar.colors.$bg}, inset 0 -18px 0 0 ${(props) => props.theme.sidebar.colors.$divider};
+    box-shadow: inset 0 -17px 0 0 ${(props) => props.theme.sidebar.colors.$bg},
+      inset 0 -18px 0 0 ${(props) => props.theme.sidebar.colors.$divider};
   }
 
   & h5 {
@@ -157,25 +155,28 @@ const StyledSection: any = styled.div<{ isActive: Boolean }>`
 `;
 
 const MenuItem: any = styled.button<{ isActive: Boolean }>`
-    height: 36px;
-        padding: 0 24px;
-        width: 100%;
-        font-size: 14px;
-        background: ${(props) => (props.isActive ? props.theme.sidebar.colors.$bgActive : 'none')};
-        text-align: left;
-        color: ${(props) => (props.isActive ? props.theme.colors.$B10 : props.theme.colors.$D80)};
-        border: none;
-        &:hover {
-          background: ${(props) => !props.isActive && props.theme.sidebar.colors.$bgHover};
-          outline: none;
-          cursor: pointer;
-        }
-        &:focus {
-          background: ${(props) => props.theme.sidebar.colors.$bgHover};
-          outline: none;
-        }
+  height: 36px;
+  padding: 0 24px;
+  width: 100%;
+  font-size: 14px;
+  background: ${(props) =>
+    props.isActive ? props.theme.sidebar.colors.$bgActive : "none"};
+  text-align: left;
+  color: ${(props) =>
+    props.isActive ? props.theme.colors.$B10 : props.theme.colors.$D80};
+  border: none;
+  &:hover {
+    background: ${(props) =>
+      !props.isActive && props.theme.sidebar.colors.$bgHover};
+    outline: none;
+    cursor: pointer;
+  }
+  &:focus {
+    background: ${(props) => props.theme.sidebar.colors.$bgHover};
+    outline: none;
+  }
 `;
 
-register(Sidebar, 'x-sidebar', ['data', 'activemenuitem']);
+register(Sidebar, "x-sidebar", ["data", "activemenuitem"]);
 
 export default Sidebar;

@@ -2,124 +2,139 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable react/jsx-props-no-spreading */
 // @ts-nocheck
-import { h } from 'preact';
-import { FC } from "preact/compat"
-import {
-    useEffect, useState, useRef, useCallback,
-} from 'preact/hooks';
-import styled from "styled-components"
-import register from 'preact-custom-element';
-import { useTable, usePagination } from 'react-table'
-import App from '../../App';
-import useCustomEvent from '../../utils/useCustomEvent';
+import { h } from "preact";
+import register from "preact-custom-element";
+import { FC } from "preact/compat";
+import { useCallback, useEffect, useRef, useState } from "preact/hooks";
+import { usePagination, useTable } from "react-table";
+import styled from "styled-components";
+import App from "../../App";
+import useCustomEvent from "../../utils/useCustomEvent";
 import Skeleton from "../Skeleton";
 
-const dummyColumns = new Array(4).fill({}).map((item, i) => ({ accessor: `${i}` }));
+const dummyColumns = new Array(4)
+  .fill({})
+  .map((item, i) => ({ accessor: `${i}` }));
 const dummyData = new Array(4).fill({});
 
+const TableComp: FC<{ data: string; columns: string }> = ({
+  data,
+  columns,
+}) => {
+  const [dataState, setData] = useState(dummyData);
+  const [columnsState, setColumns] = useState(dummyColumns);
+  const [loading, setLoading] = useState(true);
+  const [pageCount, setPageCount] = useState(0);
 
-const TableComp:FC<{ data: string, columns: string}> = ({ data, columns }) => {
-    const [dataState, setData] = useState(dummyData);
-    const [columnsState, setColumns] = useState(dummyColumns);
-    const [loading, setLoading] = useState(true);
-    const [pageCount, setPageCount] = useState(0);
+  const run = useCallback(
+    ({ parsedData, parsedColumns }) => {
+      setData(parsedData);
+      setColumns(parsedColumns);
+      setLoading(false);
+    },
+    [dataState, columnsState, loading]
+  );
 
-
-    const run = useCallback(({ parsedData, parsedColumns }) => {
-        setData(parsedData);
-        setColumns(parsedColumns);
-        setLoading(false)
-    }, [dataState, columnsState, loading])
-
-
-    useEffect(() => {
-        if (data && columns) {
-            const parsedData: Array<any> = JSON.parse(data);
-            const parsedColumns: Array<any> = JSON.parse(columns);
-            run({ parsedData, parsedColumns })
-       }
-    }, [data, columns]);
-
-
-    return (
-      <App>
-        <Table
-          columns={columnsState}
-          data={dataState}
-          loading={loading}
-          pageCount={pageCount}
-        />
-      </App>
-    )
+  useEffect(() => {
+    if (data && columns) {
+      const parsedData: Array<any> = JSON.parse(data);
+      const parsedColumns: Array<any> = JSON.parse(columns);
+      run({ parsedData, parsedColumns });
     }
+  }, [data, columns]);
 
-
-const Table:FC = (props) => {
-    const {
-        columns, data, loading, pageCount, pageCount: controlledPageCount,
-} = props;
-
-    const {
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        page,
-        prepareRow,
-        setPageSize,
-        state: { pageIndex, pageSize },
-    } = useTable({
-        columns,
-        data,
-        initialState: { pageIndex: 0, pageSize: 10 },
-        manualPagination: true,
-        pageCount: controlledPageCount,
-    }, usePagination);
-
-    const componentRef = useRef<HTMLTableElement>();
-    const dispatchEvent = useCustomEvent({
-        ref: componentRef,
-        eventName: 'tableRowClicked',
-    });
-
-
-    return (
-
-      <Styles>
-        <div ref={componentRef} {...getTableProps()} className="table">
-          <div>
-            {headerGroups.map((headerGroup) => (
-              <div key={headerGroup.id} {...headerGroup.getHeaderGroupProps()} className="tr header">
-                {headerGroup.headers.map((column) => (
-                  <div key={column.id} {...column.getHeaderProps()} className="th">
-                    {!loading && column.render('Header')}
-
-                  </div>
-                                ))}
-              </div>
-                        ))}
-          </div>
-
-          <div {...getTableBodyProps()}>
-            {page.map(
-                            (row) => {
-                                prepareRow(row);
-                                return (
-                                  <div onClick={() => dispatchEvent(row.values)} key={row.id} {...row.getRowProps()} className="tr">
-                                    {row.cells.map((cell) => (
-                                      <div key={cell.value} {...cell.getCellProps()} className="td">
-                                        {loading ? <Skeleton height={16} /> : cell.render('Cell')}
-                                      </div>
-                                        ))}
-                                  </div>
-                                )
-                            },
-                        )}
-          </div>
-        </div>
-      </Styles>
-    )
+  return (
+    <App>
+      <Table
+        columns={columnsState}
+        data={dataState}
+        loading={loading}
+        pageCount={pageCount}
+      />
+    </App>
+  );
 };
 
+const Table: FC = (props) => {
+  const {
+    columns,
+    data,
+    loading,
+    pageCount,
+    pageCount: controlledPageCount,
+  } = props;
+
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    page,
+    prepareRow,
+    setPageSize,
+    state: { pageIndex, pageSize },
+  } = useTable(
+    {
+      columns,
+      data,
+      initialState: { pageIndex: 0, pageSize: 10 },
+      manualPagination: true,
+      pageCount: controlledPageCount,
+    },
+    usePagination
+  );
+
+  const componentRef = useRef<HTMLTableElement>();
+  const dispatchEvent = useCustomEvent({
+    ref: componentRef,
+    eventName: "tableRowClicked",
+  });
+
+  return (
+    <Styles>
+      <div ref={componentRef} {...getTableProps()} className="table">
+        <div>
+          {headerGroups.map((headerGroup) => (
+            <div
+              key={headerGroup.id}
+              {...headerGroup.getHeaderGroupProps()}
+              className="tr header"
+            >
+              {headerGroup.headers.map((column) => (
+                <div
+                  key={column.id}
+                  {...column.getHeaderProps()}
+                  className="th"
+                >
+                  {!loading && column.render("Header")}
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        <div {...getTableBodyProps()}>
+          {page.map((row) => {
+            prepareRow(row);
+            return (
+              <div
+                onClick={() => dispatchEvent(row.values)}
+                key={row.id}
+                {...row.getRowProps()}
+                className="tr"
+              >
+                {row.cells.map((cell) => (
+                  <div key={cell.value} {...cell.getCellProps()} className="td">
+                    {loading ? <Skeleton height={16} /> : cell.render("Cell")}
+                  </div>
+                ))}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </Styles>
+  );
+};
 
 const Styles = styled.div`
   .table {
@@ -172,6 +187,6 @@ const Styles = styled.div`
     }
   }
 `;
-export default TableComp
+export default TableComp;
 
-register(TableComp, 'x-table', ['columns', 'data']);
+register(TableComp, "x-table", ["columns", "data"]);
